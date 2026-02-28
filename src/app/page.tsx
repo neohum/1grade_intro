@@ -3,10 +3,10 @@
 import { useState, useEffect, useCallback } from 'react';
 import { Settings, Check, X, LogOut } from 'lucide-react';
 import Link from 'next/link';
-import Image from 'next/image';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useSession, signOut } from 'next-auth/react';
 import PhysicsStudentCards from '@/components/PhysicsStudentCards';
+import AnimatedLogo from '@/components/AnimatedLogo';
 import { playBubblePop, playComplete, playUndo } from '@/lib/sounds';
 
 type Student = {
@@ -122,51 +122,101 @@ export default function Home() {
     <main className="min-h-screen bg-cmnbg flex flex-col p-6 md:p-10 overflow-hidden select-none">
       {/* Header */}
       <header className="flex justify-between items-center mb-10">
-        <div className="flex items-center gap-4">
-          <Image
-            src="/logo.svg"
-            alt="스스로 척척"
-            width={48}
-            height={48}
-            className="h-12 w-auto hidden sm:block"
-          />
-          <h1 className="text-3xl md:text-4xl lg:text-5xl font-heading font-bold text-header flex items-center gap-3">
-            <span>
-              <span className="font-accent text-p2">스스로 척척!</span>{' '}
-              <span className="text-2xl md:text-3xl lg:text-4xl">등교 루틴</span>
-            </span>
-          </h1>
+        <div className="flex items-center gap-3 md:gap-5">
+          <AnimatedLogo />
+          <div className="flex flex-col">
+            <motion.h1
+              className="text-3xl md:text-4xl lg:text-5xl font-heading font-bold text-header flex items-center gap-2"
+              initial={{ opacity: 0, x: -30 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ delay: 0.6, duration: 0.6, type: 'spring', stiffness: 200, damping: 20 }}
+            >
+              <motion.span
+                className="font-accent text-p2"
+                animate={{
+                  color: ['#F7941E', '#ED145B', '#1CBBB4', '#73BE48', '#F7941E'],
+                }}
+                transition={{ duration: 8, repeat: Infinity, ease: 'easeInOut' }}
+              >
+                스스로 척척!
+              </motion.span>
+            </motion.h1>
+            <motion.span
+              className="text-lg md:text-xl lg:text-2xl font-heading text-header/70 -mt-1"
+              initial={{ opacity: 0, x: -20 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ delay: 0.9, duration: 0.5 }}
+            >
+              등교 루틴
+            </motion.span>
+          </div>
         </div>
         <div className="flex items-center gap-3">
-          {session?.user?.name && (
-            <span className="hidden sm:inline text-sm font-heading font-semibold text-header">
-              {session.user.name} 선생님
-            </span>
+          {session?.user ? (
+            <>
+              {session.user.name && (
+                <span className="hidden sm:inline text-sm font-heading font-semibold text-header">
+                  {session.user.name} 선생님
+                </span>
+              )}
+              <Link
+                href="/settings"
+                className="flex items-center gap-2 px-5 py-2.5 bg-white text-header font-heading font-semibold rounded-full shadow-sm hover:shadow-md transition-shadow border border-gray-100"
+              >
+                <Settings size={20} className="text-p5" />
+                <span className="hidden sm:inline">설정</span>
+              </Link>
+              <button
+                onClick={() => signOut({ callbackUrl: '/login' })}
+                className="flex items-center gap-2 px-4 py-2.5 bg-white text-header font-heading font-semibold rounded-full shadow-sm hover:shadow-md transition-shadow border border-gray-100"
+              >
+                <LogOut size={18} className="text-p3" />
+                <span className="hidden sm:inline text-sm">로그아웃</span>
+              </button>
+            </>
+          ) : (
+            <>
+              <Link
+                href="/login"
+                className="flex items-center gap-2 px-5 py-2.5 bg-p5 text-white font-heading font-semibold rounded-full shadow-sm hover:opacity-90 transition-opacity"
+              >
+                로그인
+              </Link>
+              <Link
+                href="/register"
+                className="flex items-center gap-2 px-5 py-2.5 bg-white text-header font-heading font-semibold rounded-full shadow-sm hover:shadow-md transition-shadow border border-gray-100"
+              >
+                회원가입
+              </Link>
+            </>
           )}
-          <Link
-            href="/settings"
-            className="flex items-center gap-2 px-5 py-2.5 bg-white text-header font-heading font-semibold rounded-full shadow-sm hover:shadow-md transition-shadow border border-gray-100"
-          >
-            <Settings size={20} className="text-p5" />
-            <span className="hidden sm:inline">설정</span>
-          </Link>
-          <button
-            onClick={() => signOut({ callbackUrl: '/login' })}
-            className="flex items-center gap-2 px-4 py-2.5 bg-white text-header font-heading font-semibold rounded-full shadow-sm hover:shadow-md transition-shadow border border-gray-100"
-          >
-            <LogOut size={18} className="text-p3" />
-            <span className="hidden sm:inline text-sm">로그아웃</span>
-          </button>
         </div>
       </header>
 
       {/* Balloon Board */}
       <div className="flex-1 relative w-full h-full flex flex-col pb-4">
-        <PhysicsStudentCards
-          students={students}
-          getStudentProgress={getStudentProgress}
-          onSelectStudent={(s) => { playBubblePop(); setSelectedStudent(s); }}
-        />
+        {students.length === 0 ? (
+          <div className="flex-1 flex flex-col items-center justify-center gap-6">
+            <AnimatedLogo size="lg" />
+            <div className="text-center">
+              <p className="text-2xl md:text-3xl font-heading font-bold text-header/60">
+                <span className="font-accent text-p2/60">스스로 척척!</span> 등교 루틴
+              </p>
+              <p className="text-text-body mt-2">
+                {session?.user
+                  ? '설정에서 학생과 활동을 추가해보세요!'
+                  : '로그인하여 시작하세요!'
+                }
+              </p>
+            </div>
+          </div>
+        ) : (
+          <PhysicsStudentCards
+            students={students}
+            getStudentProgress={getStudentProgress}
+            onSelectStudent={(s) => { playBubblePop(); setSelectedStudent(s); }}
+          />
+        )}
 
         {/* Floating Activity Cards Overlay */}
         <AnimatePresence>
@@ -251,7 +301,7 @@ export default function Home() {
             </motion.div>
           )}
         </AnimatePresence>
-      </div>
+        </div>
     </main>
   );
 }

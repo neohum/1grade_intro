@@ -66,6 +66,8 @@ export default function PhysicsStudentCards({
   const clickInfoRef = useRef<{ x: number; y: number; label: string } | null>(null);
   const onSelectRef = useRef(onSelectStudent);
   onSelectRef.current = onSelectStudent;
+  const progressRef = useRef(getStudentProgress);
+  progressRef.current = getStudentProgress;
   const [positions, setPositions] = useState<Map<number, BodyPos>>(new Map());
 
   const sync = useCallback(() => {
@@ -172,12 +174,16 @@ export default function PhysicsStudentCards({
       Composite.add(engine.world, body);
     });
 
-    // Per-balloon floating forces
+    // Per-balloon floating forces — balloons rise as activities are completed
     const beforeUpdateHandler = () => {
       const t = engine.timing.timestamp * 0.001;
       bodiesRef.current.forEach((body, id) => {
         const phase = id * 2.399;
-        const targetY = ch - 120 - PHYS_R + Math.sin(phase * 0.5) * 25;
+        const progress = progressRef.current(id); // 0 ~ 1
+        const bottomY = ch - 120 - PHYS_R;
+        const topY = PHYS_R + 60;
+        const floatRange = bottomY - topY;
+        const targetY = bottomY - progress * floatRange + Math.sin(phase * 0.5) * 25;
         const dy = targetY - body.position.y;
         const springY = dy * 0.000018;
         const bobX = Math.sin(t * 0.5 + phase) * 0.000035;

@@ -43,7 +43,7 @@ export default function RegisterPage() {
   return (
     <main className="min-h-screen bg-cmnbg flex items-center justify-center p-6">
       <div className="w-full max-w-sm">
-        <div className="flex flex-col items-center mb-8">
+        <Link href="/" className="flex flex-col items-center mb-8">
           <Image
             src="/logo.svg"
             alt="스스로 척척"
@@ -55,7 +55,7 @@ export default function RegisterPage() {
             <span className="font-accent text-p2">스스로 척척!</span>
           </h1>
           <p className="text-text-body mt-2">선생님 회원가입</p>
-        </div>
+        </Link>
 
         <form onSubmit={handleSubmit} className="bg-white rounded-2xl shadow-sm p-6 space-y-4">
           {error && (
