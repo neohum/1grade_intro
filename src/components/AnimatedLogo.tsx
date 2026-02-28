@@ -92,14 +92,21 @@ export default function AnimatedLogo({ size = 'md' }: { size?: 'md' | 'lg' } = {
     sequence();
   }, [controls]);
 
-  const sparkles = Array.from({ length: 10 }, (_, i) => ({
-    id: i,
-    delay: i * 0.5,
-    color: SPARKLE_COLORS[i % SPARKLE_COLORS.length],
-    x: 10 + Math.random() * 80,
-    y: 10 + Math.random() * 80,
-    size: 4 + Math.random() * 6,
-  }));
+  const sparkles = Array.from({ length: 10 }, (_, i) => {
+    // Deterministic pseudo-random to avoid hydration mismatch
+    const hash = (seed: number) => {
+      const x = Math.sin(seed * 9301 + 49297) * 49297;
+      return x - Math.floor(x);
+    };
+    return {
+      id: i,
+      delay: i * 0.5,
+      color: SPARKLE_COLORS[i % SPARKLE_COLORS.length],
+      x: 10 + hash(i * 17 + 1) * 80,
+      y: 10 + hash(i * 31 + 2) * 80,
+      size: 4 + hash(i * 53 + 3) * 6,
+    };
+  });
 
   return (
     <div className="relative flex items-center justify-center">

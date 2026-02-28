@@ -34,3 +34,15 @@ h1, h2, h3, h4, h5, h6 {
   0%, 100% { transform: translateY(0); }
   50% { transform: translateY(-8px); }
 }
+
+@keyframes cloudDriftRight {
+  0% { transform: translateX(-20px); }
+  50% { transform: translateX(20px); }
+  100% { transform: translateX(-20px); }
+}
+
+@keyframes cloudDriftLeft {
+  0% { transform: translateX(20px); }
+  50% { transform: translateX(-20px); }
+  100% { transform: translateX(20px); }
+}
