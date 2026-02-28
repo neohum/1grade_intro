@@ -1,26 +1,36 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
+  /* Template Colors */
+  --color-p1: #0A6375;
+  --color-p2: #F7941E;
+  --color-p3: #ED145B;
+  --color-p4: #73BE48;
+  --color-p5: #1CBBB4;
+  --color-cmnbg: #FFF0E5;
+  --color-bg-beige: #F4EEE5;
+  --color-bg-grayblue: #EFF5F6;
+  --color-header: #385469;
+  --color-text-body: #5C707E;
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+  /* Fonts */
+  --font-heading: var(--font-jost);
+  --font-accent: var(--font-bubblegum);
+  --font-body: var(--font-nunito);
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-body), sans-serif;
+  color: var(--color-text-body);
+  background: #ffffff;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-heading), sans-serif;
+  color: var(--color-header);
+}
+
+@keyframes activityFloat {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-8px); }
 }

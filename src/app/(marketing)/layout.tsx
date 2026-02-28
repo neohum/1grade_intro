@@ -1,0 +1,18 @@
+import SiteHeader from '@/components/marketing/SiteHeader';
+import SiteFooter from '@/components/marketing/SiteFooter';
+import ScrollToTop from '@/components/ui/ScrollToTop';
+
+export default function MarketingLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
+  return (
+    <>
+      <SiteHeader />
+      <main>{children}</main>
+      <SiteFooter />
+      <ScrollToTop />
+    </>
+  );
+}

@@ -1,9 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -12,9 +6,22 @@ datasource db {
   provider = "postgresql"
 }
 
+model Teacher {
+  id         Int        @id @default(autoincrement())
+  email      String     @unique
+  password   String
+  name       String
+  students   Student[]
+  activities Activity[]
+  createdAt  DateTime   @default(now())
+  updatedAt  DateTime   @updatedAt
+}
+
 model Student {
   id        Int      @id @default(autoincrement())
   name      String
+  teacherId Int
+  teacher   Teacher  @relation(fields: [teacherId], references: [id], onDelete: Cascade)
   records   Record[]
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -23,7 +30,9 @@ model Student {
 model Activity {
   id        Int      @id @default(autoincrement())
   title     String
-  iconUrl   String?  // URL from Freepik or Flaticon
+  iconUrl   String?
+  teacherId Int
+  teacher   Teacher  @relation(fields: [teacherId], references: [id], onDelete: Cascade)
   records   Record[]
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -34,10 +43,10 @@ model Record {
   studentId  Int
   activityId Int
   completed  Boolean  @default(false)
-  date       DateTime @default(now()) // Using date to group by day
+  date       DateTime @default(now())
 
   student    Student  @relation(fields: [studentId], references: [id], onDelete: Cascade)
   activity   Activity @relation(fields: [activityId], references: [id], onDelete: Cascade)
 
-  @@unique([studentId, activityId, date]) // Ensures a student can only have one record per activity per day
+  @@unique([studentId, activityId, date])
 }
