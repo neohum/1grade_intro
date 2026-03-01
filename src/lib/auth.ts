@@ -51,6 +51,7 @@ export const authOptions: NextAuthOptions = {
     signIn: '/login',
     signOut: '/login',
   },
+  debug: process.env.NODE_ENV !== 'production',
 };
 
 export async function getTeacherId(): Promise<number | null> {

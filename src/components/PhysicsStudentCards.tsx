@@ -195,7 +195,8 @@ export default function PhysicsStudentCards({
 
     // Mouse / touch drag with click detection
     const mouse = Mouse.create(el);
-    mouse.pixelRatio = window.devicePixelRatio || 1;
+    // Set pixelRatio to 1 because physics world operates in CSS pixels
+    mouse.pixelRatio = 1;
     const mc = MouseConstraint.create(engine, {
       mouse,
       constraint: { stiffness: 0.5, damping: 0.15, render: { visible: false } },
